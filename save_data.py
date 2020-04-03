@@ -25,10 +25,11 @@ def write_summary(chi, problem, qubits, entanglement, layers, method, name,
     """
     This function takes some informations of a given problem and saves some text files 
     with this information and the parameters which are solution of the problem
-    INPUT: 
+    INPUT:
         -chi: cost function, to choose between 'fidelity_chi' or 'weighted_fidelity_chi'
         -problem: name of the problem, to choose between
-            ['circle', '3 circles', 'hypersphere', 'tricrown', 'non convex', 'crown', 'sphere', 'squares', 'wavy lines']
+            ['circle', '3 circles', 'hypersphere', 'tricrown', 'non convex',
+            'crown', 'sphere', 'squares', 'wavy lines', 'vcdim']
         -qubits: number of qubits, must be an integer
         -entanglement: whether there is entanglement or not in the Ansätze, just 'y'/'n'
         -layers: number of layers, must be an integer. If layers == 1, entanglement is not taken in account
@@ -53,7 +54,7 @@ def write_summary(chi, problem, qubits, entanglement, layers, method, name,
     foldname = name_folder(chi, problem, qubits, entanglement, layers, method)
     create_folder(foldname)
     file_text = open(foldname + '/' + name + '_summary.txt','w')
-    file_text.write('\nFigur of merit = '+chi)
+    file_text.write('\nFigure of merit = '+chi)
     file_text.write('\nProblem = ' + problem)
     file_text.write('\nNumber of qubits = ' + str(qubits))
     if qubits != 1:
@@ -89,7 +90,8 @@ def read_summary(chi, problem, qubits, entanglement, layers, method, name):
     INPUT: 
         -chi: cost function, to choose between 'fidelity_chi' or 'weighted_fidelity_chi'
         -problem: name of the problem, to choose among
-            ['circle', '3 circles', 'hypersphere', 'tricrown', 'non convex', 'crown', 'sphere', 'squares', 'wavy lines'
+            ['circle', '3 circles', 'hypersphere', 'tricrown', 'non convex',
+            'crown', 'sphere', 'squares', 'wavy lines', 'vcdim']
         -qubits: number of qubits, must be an integer
         -entanglement: whether there is entanglement or not in the Ansätze, just 'y'/'n'
         -layers: number of layers, must be an integer. If layers == 1, entanglement is not taken in account
@@ -107,7 +109,8 @@ def read_summary(chi, problem, qubits, entanglement, layers, method, name):
         raise ValueError('Figure of merit is not valid')
     if chi == 'fidelity_chi':
         foldname = name_folder(chi, problem, qubits, entanglement, layers, method)
-        if problem in ['circle', '3 circles', 'wavy circles', 'wavy lines', 'non convex','crown','tricrown','squares']:
+        if problem in ['circle', '3 circles', 'wavy circles', 'wavy lines',
+                       'non convex','crown','tricrown','squares', 'vcdim']:
             theta = np.loadtxt(foldname + '/' + name + '_theta.txt').reshape((qubits, layers, 3))
             dim = 2
         elif problem == 'sphere': 
@@ -122,7 +125,8 @@ def read_summary(chi, problem, qubits, entanglement, layers, method, name):
     
     if chi == 'weighted_fidelity_chi':
         foldname = name_folder(chi, problem, qubits, entanglement, layers, method)
-        if problem in ['circle', '3 circles', 'wavy circles', 'wavy lines', 'non convex','crown','tricrown','squares']:
+        if problem in ['circle', '3 circles', 'wavy circles', 'wavy lines',
+                       'non convex','crown','tricrown','squares', 'vcdim']:
             theta = np.loadtxt(foldname + '/' + name + '_theta.txt').reshape((qubits, layers, 3))
             dim = 2
         elif problem == 'sphere': 
@@ -136,7 +140,8 @@ def read_summary(chi, problem, qubits, entanglement, layers, method, name):
 
         if problem in ['3 circles','wavy lines','squares']:
             weight = np.loadtxt(foldname + '/' + name + '_weight.txt').reshape((4, qubits))
-        if problem in ['circle','wavy circle','sphere', 'non convex', 'crown', 'hypersphere']:
+        if problem in ['circle','wavy circle','sphere', 'non convex', 'crown',
+                       'hypersphere', 'vcdim']:
             weight = np.loadtxt(foldname + '/' + name + '_weight.txt').reshape((2, qubits))
         if problem in ['tricrown']:
             weight = np.loadtxt(foldname + '/' + name + '_weight.txt').reshape((3, qubits))
@@ -150,7 +155,8 @@ def write_epochs_file(chi, problem, qubits, entanglement, layers, method, name):
     INPUT: 
         -chi: cost function, to choose between 'fidelity_chi' or 'weighted_fidelity_chi'
         -problem: name of the problem, to choose among
-            ['circle', '3 circles', 'hypersphere', 'tricrown', 'non convex', 'crown', 'sphere', 'squares', 'wavy lines']
+            ['circle', '3 circles', 'hypersphere', 'tricrown', 'non convex',
+            'crown', 'sphere', 'squares', 'wavy lines', 'vcdim']
         -qubits: number of qubits, must be an integer
         -entanglement: whether there is entanglement or not in the Ansätze, just 'y'/'n'
         -layers: number of layers, must be an integer. If layers == 1, entanglement is not taken in account
@@ -204,14 +210,14 @@ def close_epochs_file(file_text, best_epoch):
     file_text.write('\n\n\nBest epoch = ' + str(best_epoch))
     file_text.close()
     
-def write_epochs_error_rate(chi, problem, qubits, entanglement, layers, method, name, 
-                      accs_train, accs_test):   
+def write_epochs_error_rate(chi, problem, qubits, entanglement, layers, method, name, accs_train, accs_test):   
     """
     This function takes information from the SGD_step_by_step function and saves the accuracies for training and test sets. It is required for studying the overlearning
     INPUT: 
         -chi: cost function, to choose between 'fidelity_chi' or 'weighted_fidelity_chi'
         -problem: name of the problem, to choose among
-            ['circle', '3 circles', 'hypersphere', 'tricrown', 'non convex', 'crown', 'sphere', 'squares', 'wavy lines']
+            ['circle', '3 circles', 'hypersphere', 'tricrown', 'non convex',
+            'crown', 'sphere', 'squares', 'wavy lines', 'vcdim']
         -qubits: number of qubits, must be an integer
         -entanglement: whether there is entanglement or not in the Ansätze, just 'y'/'n'
         -layers: number of layers, must be an integer. If layers == 1, entanglement is not taken in account
@@ -341,96 +347,11 @@ def samples_paint(problem, settings, sol, foldname, filename, bw):
     
     fig.savefig(foldname + '/' + filename)
     plt.close('all')
-    
-'''
-def samples_paint_worldmap(problem, settings, sol, foldname, filename, bw):
-    """
-    This function takes the problem and the points when they are already classified, and saves a picture of them
-    INPUT: 
-        -problem: name of the problem, to choose among
-            ['circle', '3 circles', 'hypersphere', 'tricrown', 'non convex', 'crown', 'sphere', 'squares', 'wavy lines']
-        -settings: parameters the function needs for drawing. Provided by problem_gen.problem_gen
-        -sol: solutions of the points alreafy classified
-        -foldname : name of the folder where we store results
-        -filename: name of the files we will produce
-        -bw: black and white, True/False
-    OUTPUT:
-        a file with the points and their classes, and whether they are right or wrong
-    """
-    if bw == False:
-        colors_classes = get_cmap('plasma')
-        norm_class = Normalize(vmin=-.5,vmax=np.max(sol[:,-3]) + .5)
-    
-        colors_rightwrong = get_cmap('RdYlGn')
-        norm_rightwrong = Normalize(vmin=-.1,vmax=1.1)
-        
-    if bw == True:
-        colors_classes = get_cmap('Greys')
-        norm_class = Normalize(vmin=-.5,vmax=np.max(sol[:,-3]) + .5)
-    
-        colors_rightwrong = get_cmap('Greys')
-        norm_rightwrong = Normalize(vmin=-.1,vmax=1.1)
 
-    fig, axs = plt.subplots(nrows = 3, figsize=(5,15))
-    
-    line1 = _winkel_map((np.linspace(-np.pi,np.pi), np.zeros(50)))
-    line2 = _winkel_map((np.linspace(-np.pi,np.pi), np.ones(50)))
-    line3 = _winkel_map((np.linspace(-np.pi,np.pi), -np.ones(50)))
-    line4 = _winkel_map((np.zeros(50), np.linspace(-np.pi/2,.5*np.pi)))
-    line5 = _winkel_map((np.pi*np.ones(50), np.linspace(-np.pi/2,.5*np.pi)))
-    line6 = _winkel_map((-np.pi*np.ones(50), np.linspace(-np.pi/2,.5*np.pi)))
-    ax = axs[0]
-    ax.plot(line1[0], line1[1], 'k')
-    ax.plot(line2[0], line2[1], 'k')
-    ax.plot(line3[0], line3[1], 'k')
-    ax.plot(line4[0], line4[1], 'k')
-    ax.plot(line5[0], line5[1], 'k')
-    ax.plot(line6[0], line6[1], 'k')
-
-    X = np.empty((len(sol), 2))
-    for i,s in enumerate(sol):
-        mapped = _winkel_map(s[:2])
-        X[i] = mapped
-
-    ax.scatter(X[:,0], X[:,1], c=sol[:,-3], cmap = colors_classes, s=2, norm=norm_class)
-    
-    #ax.set_xlabel('x', fontsize=16)
-    #ax.set_ylabel('y', fontsize=16)
-    #ax.tick_params(axis='both',labelsize=16)
-    #ax.set_xlim(-1, 1)
-    #ax.set_ylim(-1, 1)
-    #ax.margins(0)
-    #ax.axis('equal')
-    
-    bx = axs[1]    
-    bx.scatter(X[:,0], X[:,1], c=sol[:,-2], cmap = colors_classes, s=2, norm=norm_class)  
-    
-    cx = axs[2]    
-    cx.scatter(X[:,0], X[:,1], c=sol[:,-1], cmap = colors_rightwrong, s=2, norm=norm_rightwrong)  
-    
-    #bx.set_xlabel('x', fontsize=16)
-    #bx.tick_params(axis='x', labelsize = 16)
-    #bx.tick_params(axis='y', labelsize=0)
-    #bx.set_xlim([-1, 1])
-    #bx.set_ylim([-1, 1])
-    #bx.margins(0)
-    #bx.axis('equal')
-    
-    fig.savefig(foldname + '/' + filename + '_worldmap')
-    plt.close('all')
-    
-def _winkel_map(angles):
-    
-    alpha = np.arccos(np.cos(angles[1])*np.cos(angles[0] / 2))
-    x = .5 * (angles[0] * 180 / np.pi + 2 * np.cos(angles[1] * np.sin(.5 * angles[0])) / np.sinc(alpha / np.pi))
-    y = .5 * (angles[1] * 180 / np.pi + np.sin(angles[1])/np.sinc(alpha/np.pi))
-    
-    return np.array([x,y])
-'''
-    
+    return
 def create_folder(directory): 
     """
-    Auxiliar function for creating directories with name directory
+   # Auxiliar function for creating directories with name directory
     
     """
     try:
@@ -442,10 +363,11 @@ def create_folder(directory):
 def name_folder(chi, problem, qubits, entanglement, layers, method):
     """
     This function takes information from the SGD_step_by_step function and saves the accuracies for training and test sets. It is required for studying the overlearning
-    INPUT: 
+    INPUT:
         -chi: cost function, to choose between 'fidelity_chi' or 'weighted_fidelity_chi'
         -problem: name of the problem, to choose among
-            ['circle', '3 circles', 'hypersphere', 'tricrown', 'non convex', 'crown', 'sphere', 'squares', 'wavy lines']
+            ['circle', '3 circles', 'hypersphere', 'tricrown', 'non convex',
+            'crown', 'sphere', 'squares', 'wavy lines', 'vcdim']
         -qubits: number of qubits, must be an integer
         -entanglement: whether there is entanglement or not in the Ansätze, just 'y'/'n'
         -layers: number of layers, must be an integer. If layers == 1, entanglement is not taken in account
@@ -456,6 +378,7 @@ def name_folder(chi, problem, qubits, entanglement, layers, method):
     OUTPUT:
         -foldname: A name for a folder
     """
+
     chi = chi.lower().replace(' ','_')
     if chi in ['fidelity', 'weighted_fidelity']: chi += '_chi'
     if chi not in ['fidelity_chi', 'weighted_fidelity_chi']:
@@ -472,9 +395,4 @@ def name_folder(chi, problem, qubits, entanglement, layers, method):
             
     foldname += str(layers) + '_layers/'
     foldname += method
-    
     return foldname
-    
-
-
-

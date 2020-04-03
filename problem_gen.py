@@ -19,7 +19,8 @@ def problem_generator(problem, qubits, layers, chi, qubits_lab=1):
     INPUT: 
         -chi: cost function, to choose between 'fidelity_chi' or 'weighted_fidelity_chi'
         -problem: name of the problem, to choose among
-            ['circle', '3 circles', 'hypersphere', 'tricrown', 'non convex', 'crown', 'sphere', 'squares', 'wavy lines']
+            ['circle', '3 circles', 'hypersphere', 'tricrown', 'non convex',
+            'crown', 'sphere', 'squares', 'wavy lines', 'vcdim']
         -qubits: number of qubits, must be an integer
         -layers: number of layers, must be an integer. If layers == 1, entanglement is not taken in account
 
@@ -58,7 +59,8 @@ def problem_generator(problem, qubits, layers, chi, qubits_lab=1):
         theta, alpha, reprs = _tricrown(qubits, layers, qubits_lab, chi)
     elif problem == 'hypersphere':
         theta, alpha, reprs = _hypersphere(qubits, layers, qubits_lab, chi)
-        
+    elif problem == 'vcdim':
+        theta, alpha, reprs = _vcdim(qubits, layers, qubits_lab, chi)
     else:
         raise ValueError('Problem is not valid')
         
@@ -130,8 +132,15 @@ def _hypersphere(qubits, layers, qubits_lab, chi):
     reprs = representatives(classes, qubits_lab)
     theta = np.random.rand(qubits, layers, 6)
     alpha = np.random.rand(qubits, layers, 4)
-    return theta, alpha, reprs   
-        
+    return theta, alpha, reprs
+
+def _vcdim(qubits, layers, qubits_lab, chi):
+    classes = 2
+    reprs = representatives(classes, qubits_lab)
+    theta = np.random.rand(qubits, layers, 3)
+    alpha = np.random.rand(qubits, layers, 2)
+    return theta, alpha, reprs
+
 def representatives(classes, qubits_lab):
     """
     This function creates the label states for the classification task
