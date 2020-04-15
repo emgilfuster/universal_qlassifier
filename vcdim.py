@@ -1,6 +1,6 @@
 ##########################################################################
 #Quantum classifier
-#Adrián Pérez-Salinas, Alba Cervera-Lierta, Elies Gil, J. Ignacio Latorre
+#Adrián Pérez-Salinas, Alba Cervera-Lierta, Elies Gil-Fuster, J. Ignacio Latorre
 #Code by APS
 #Code-checks by ACL
 #June 3rd 2019
@@ -14,13 +14,11 @@
 ## It'll deal with the creation of data, labels, and minimization
 
 import numpy as np
-from big_functions import *;
-from save_data import *;
-from fidelity_minimization import *;
-from weighted_fidelity_minimization import *;
-from problem_gen import *;
-from test_data import *;
-from save_data import *;
+from fidelity_minimization import fidelity_minimization
+from weighted_fidelity_minimization import weighted_fidelity_minimization
+from problem_gen import problem_generator;
+from test_data import tester
+from save_data import write_summary
 
 # data generation
 
@@ -76,7 +74,7 @@ def minimizer_vc(chi, layers, method, name, epochs=3000, eta=0.1, seed=0):
 
     n = 2
     acc_train = 1
-    while acc_train:
+    while int(acc_train):
         for i in range(2**n):
             data = vc_data(n, i)
             if chi == 'fidelity_chi':
@@ -89,8 +87,10 @@ def minimizer_vc(chi, layers, method, name, epochs=3000, eta=0.1, seed=0):
                                                         n, eta, epochs)
                 acc_train = tester(theta, alpha, data, reprs, 'n', chi)
                 write_summary(chi, 'vcdim', 1, 'n', layers, method,
-                              name, theta, alpha, 0, f, acc_train, acc_train,
+                              name+'_'+str(n)+'_'+str(i), theta, alpha, 0, f, acc_train, acc_train,
                               seed, epochs=epochs)
+                if not int(acc_train):
+                    return
             elif chi == 'weighted_fidelity_chi':
                 qubits_lab = 1
                 theta, alpha, weight, reprs = problem_generator('vcdim', 1,
@@ -107,6 +107,8 @@ def minimizer_vc(chi, layers, method, name, epochs=3000, eta=0.1, seed=0):
                 acc_train = tester(theta, alpha, data, reprs, 'n',
                                    chi, weights=weight)
                 write_summary(chi, 'vcdim', 1, 'n', layers, method,
-                              name, theta, alpha, weight, f, acc_train,
+                              name+'_'+str(n)+'_'+str(i), theta, alpha, weight, f, acc_train,
                               acc_train, seed, epochs=epochs)
+                if not int(acc_train):
+                    return
         n += 1

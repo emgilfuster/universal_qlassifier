@@ -2,7 +2,7 @@ from big_functions import minimizer, painter, SGD_step_by_step_minimization, ove
 from vcdim import *;
 qubits = 1  #integer, number of qubits
 layers = 1 #integer, number of layers (time we reupload data)
-chi = 'fidelity_chi' #Cost function; choose between ['fidelity_chi', 'weighted_fidelity_chi']
+chi = 'weighted_fidelity_chi' #Cost function; choose between ['fidelity_chi', 'weighted_fidelity_chi']
 problem='vcdim' #name of the problem, choose among ['circle', 'wavy circle',
                  #'3 circles', 'wavy lines', 'sphere', 'non convex', 'crown', 'vcdim']
 if problem != 'vcdim':
@@ -19,5 +19,5 @@ else:
     method = 'SGD'
     name = 'vc-run'
     seed = 30
-    epochs = 10 #only for SGD
+    epochs = 3000 #only for SGD
     minimizer_vc(chi, layers, method, name, epochs)

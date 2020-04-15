@@ -1,6 +1,6 @@
 ##########################################################################
 #Quantum classifier
-#Adrián Pérez-Salinas, Alba Cervera-Lierta, Elies Gil, J. Ignacio Latorre
+#Adrián Pérez-Salinas, Alba Cervera-Lierta, Elies Gil-Fuster, J. Ignacio Latorre
 #Code by APS
 #Code-checks by ACL
 #June 3rd 2019
