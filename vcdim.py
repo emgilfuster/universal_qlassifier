@@ -14,11 +14,12 @@
 ## It'll deal with the creation of data, labels, and minimization
 
 import numpy as np
+import matplotlib.pyplot as plt
 from fidelity_minimization import fidelity_minimization
 from weighted_fidelity_minimization import weighted_fidelity_minimization
-from problem_gen import problem_generator;
-from test_data import tester
-from save_data import write_summary
+from problem_gen import problem_generator, representatives;
+from test_data import tester, _claim
+from save_data import write_summary, read_summary, name_folder
 
 # data generation
 
@@ -112,3 +113,89 @@ def minimizer_vc(chi, layers, method, name, epochs=3000, eta=0.1, seed=0):
                 if not int(acc_train):
                     return
         n += 1
+
+def painter_vc (chi, layers, method, name, n, p, bw=False, seed=0):
+    """
+        Adaption of big_functions.painter to 1 qubit vc dim.
+        Args.
+            chi (str): cost function name, 'fidelity_chi'/'weighted_fidelity_chi'
+            layers (int): number of layers
+            method (str): minimization method, 'SGD'/'L-BFGS-B'
+            name (str): fname for output
+            n (int): number of points
+            p (int): label permutation
+            bw (bool): output in B&W
+        Rets.
+            none
+        Effect.
+            Create file depicting already stored data
+    """
+    np.random.seed(seed)
+    name +='_'+str(n)+'_'+str(p)
+    classes = 2
+    qubits_lab = 1
+    reprs = representatives(classes, qubits_lab)
+    params = read_summary(chi, 'vcdim', 1, 'n', layers, method,
+                          name)
+    foldname = name_folder(chi, 'vcdim', 1, 'n', layers, method)
+
+    if chi == 'fidelity_chi':
+        theta, alpha = params
+        sol = classify_vc(theta, alpha, reprs, chi)
+    if chi == 'weighted_fidelity_chi':
+        theta, alpha, weight = params
+        sol = classify_vc(theta, alpha, reprs, chi, weight)
+
+    plot_vc(sol, foldname, name)
+
+
+def classify_vc(theta, alpha, reprs, chi, weights=None, grain=30):
+    """
+        Adaption of test_data.Accuracy_test to 1 qubit vcdim.
+        Args.
+            theta (array): circuit parameters 1
+            alpha (array): circuit parameters 2
+            reprs (array): label states for different classes
+            chi (str): 'fidelity_chi'/'weighted_fidelity_chi' cost function
+            weights (array): circuit parameters 3
+            grain (int): inverse size of grid step
+        Rets.
+            classification (array):
+                classification[0]: data 1st component
+                classificatoin[1]: data 2nd component
+                classification[2]: data label
+    """
+    x_grid = np.linspace(-1, 1, grain)
+    size = grain*grain
+    classification = np.zeros(shape=(3,size))
+    classification[0] = np.concatenate([x_grid for i in range(grain)])
+    classification[1] = np.concatenate(
+        [np.concatenate([[x] for j in range(grain)]) for x in x_grid]
+    )
+    classification[2] = [_claim(theta, alpha, weights, (x,y), reprs, 'n',
+                                    chi) for (x,y) in
+                         zip(classification[0],classification[1])]
+    return classification
+
+def plot_vc (data, foldname, filename):
+    '''
+        Adaption of save_data.samples_paint to 1 qubit vcdim.
+        Args.
+            data (array): labelled data
+                data[i][0] (array): [x_1, x_2]
+                data[i][1] (bool): label
+            foldname (str): output foldername
+            filename (str): output filename
+        Rets.
+            None
+        Effect.
+            Creates plots with classification
+    '''
+
+    plt.figure()
+    plt.scatter(data[0],data[1],s=10,c=data[2],alpha=1)
+    plt.xlabel('x')
+    plt.ylabel('y')
+
+    plt.savefig(foldname+'/'+filename)
+    plt.close()

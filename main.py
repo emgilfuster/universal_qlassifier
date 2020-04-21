@@ -1,8 +1,8 @@
 from big_functions import minimizer, painter, SGD_step_by_step_minimization, overlearning_paint
 from vcdim import *;
 qubits = 1  #integer, number of qubits
-layers = 1 #integer, number of layers (time we reupload data)
-chi = 'weighted_fidelity_chi' #Cost function; choose between ['fidelity_chi', 'weighted_fidelity_chi']
+layers = 2 #integer, number of layers (time we reupload data)
+chi = 'fidelity_chi' #Cost function; choose between ['fidelity_chi', 'weighted_fidelity_chi']
 problem='vcdim' #name of the problem, choose among ['circle', 'wavy circle',
                  #'3 circles', 'wavy lines', 'sphere', 'non convex', 'crown', 'vcdim']
 if problem != 'vcdim':
@@ -16,8 +16,11 @@ if problem != 'vcdim':
     minimizer(chi, problem, qubits, entanglement, layers, method, name, seed = seed)
     painter(chi, problem, qubits, entanglement, layers, method, name, standard_test=True, seed=seed)
 else:
-    method = 'SGD'
+    method = 'L-BFGS-B'
     name = 'vc-run'
     seed = 30
     epochs = 3000 #only for SGD
-    minimizer_vc(chi, layers, method, name, epochs)
+#    minimizer_vc(chi, layers, method, name, epochs)
+    n = 4
+    for i in range(2**n):
+        painter_vc(chi, layers, method, name, n, i)
